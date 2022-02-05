@@ -3,9 +3,11 @@ from parser import Parser
 
 def test():
     code = """
-    {
-        // Eins Kommentar
-        var bostel_stinkt: bool = 1;
+    fun main(arg0: int): int {
+        // This is a comment
+        var a: int = 2;
+        var b: int = 3;
+        var c: int = a + b;
     }
     """
 

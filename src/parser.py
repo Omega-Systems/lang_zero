@@ -10,20 +10,36 @@ class Parser:
         self.tokens = iter(tokens)
         self.current_token = next(self.tokens)
         #print(self.current_token)
-        tree = self.parse_compound()
+        tree = self.parse_function()
+        print()
         tree.output()
         print(f"=== FINISHED PARSING ===")
         print()
         return tree
 
+    def parse_function(self):
+        self.match(token.Name)
+        name = self.parse_name()
+        self.match(token.LParen)
+        arguments = []
+        while type(self.current_token) != token.RParen:
+            argname = self.parse_name()
+            self.match(token.Colon)
+            datatype = self.parse_name()
+            arguments.append(node.Variable(argname, datatype))
+        self.match(token.RParen)
+        self.match(token.Colon)
+        return_type = self.parse_name()
+        body = self.parse_compound()
+        return node.Function(name, arguments, return_type, body)
+
     def parse_compound(self):
         statements = []
-        self.consume(token.LCurly)
+        self.match(token.LCurly)
         while type(self.current_token) != token.RCurly:
-            #print(self.current_token)
             statement = self.parse_statement()
             statements.append(statement)
-        #self.consume(token.RParen)
+        self.match(token.RCurly)
         return node.Compound(statements)
 
     def parse_statement(self):
@@ -31,23 +47,24 @@ class Parser:
             case token.Name:
                 match self.current_token.value:
                     case "var":
-                        self.consume(token.Name)
+                        self.match(token.Name)
                         name = self.parse_name()
-                        self.consume(token.Colon)
+                        self.match(token.Colon)
                         datatype = self.parse_name()
-                        self.consume(token.Equals)
+                        self.match(token.Equals)
                         value = self.parse_sum()
-                        self.consume(token.Semicolon)
-                        return node.VarDeclaration(name, datatype, value)
+                        self.match(token.Semicolon)
+                        variable = node.Variable(name, datatype)
+                        return node.VarDeclaration(variable, value)
 
     def parse_name(self):
-        return node.Identifier(self.consume(token.Name))
+        return node.Identifier(self.match(token.Name))
 
     def parse_sum(self):
         new_node = self.parse_product()
         while type(self.current_token) in (token.Plus, token.Minus):
             new_node = node.BinaryOp(
-                self.consume(token.Plus, token.Minus),
+                self.match(token.Plus, token.Minus),
                 new_node,
                 self.parse_product())
         return new_node
@@ -56,7 +73,7 @@ class Parser:
         new_node = self.parse_factor()
         while type(self.current_token) in (token.Mul, token.Div):
             new_node = node.BinaryOp(
-                self.consume(token.Mul, token.Div),
+                self.match(token.Mul, token.Div),
                 new_node,
                 self.parse_factor())
         return new_node
@@ -64,24 +81,26 @@ class Parser:
     def parse_factor(self):
         match type(self.current_token):
             case token.Integer:
-                return node.Integer(self.consume(token.Integer))
+                return node.Integer(self.match(token.Integer))
             case token.Name:
-                return node.Identifier(self.consume(token.Name))
+                return node.Identifier(self.match(token.Name))
             case token.Plus:
-                return node.UnaryOp(self.consume(token.Plus), self.parse_factor())
+                return node.UnaryOp(self.match(token.Plus), self.parse_factor())
             case token.Minus:
-                return node.UnaryOp(self.consume(token.Minus), self.parse_factor())
+                return node.UnaryOp(self.match(token.Minus), self.parse_factor())
             case token.LParen:
-                self.consume(token.LParen)
+                self.match(token.LParen)
                 new_node = self.parse_sum()
-                self.consume(token.RParen)
+                self.match(token.RParen)
                 return new_node
         raise Exception(f"Invalid syntax near {repr(self.current_token)}")
 
-    def consume(self, *token_types):
+    def match(self, *token_types):
+
         if type(self.current_token) in token_types:
             last_token = self.current_token
             self.current_token = next(self.tokens)
+            print(f"Matched: {last_token}")
             return last_token
         else:
-            raise Exception(f"Invalid syntax")
+            raise Exception(f"Invalid syntax. Expected {token_types}, but found {type(self.current_token)}")

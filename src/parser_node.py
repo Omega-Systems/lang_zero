@@ -48,17 +48,15 @@ class Identifier(Node):
         print(f"{'    ' * depth}{self.value}")
 
 class VarDeclaration(Node):
-    def __init__(self, name, datatype, value):
-        self.name = name
-        self.datatype = datatype
+    def __init__(self, variable, value):
+        self.variable = variable
         self.value = value
 
     def __str__(self):
         return f"{name}: {datatype} = value"
 
     def output(self, depth=0):
-        print(f"{'    ' * depth}{self.name}")
-        self.datatype.output(depth + 1)
+        print(f"{'    ' * depth}{self.variable}")
         self.value.output(depth + 1)
 
 class Compound(Node):
@@ -69,6 +67,35 @@ class Compound(Node):
         return f""
 
     def output(self, depth=0):
-        print(f"{'    ' * depth}{'Compound'}")
+        print(f"{'    ' * depth}COMPOUND")
         for statement in self.statement_list:
             statement.output(depth + 1)
+
+class Function(Node):
+    def __init__(self, name, arguments, return_type, body):
+        self.name = name
+        self.arguments = arguments
+        self.return_type = return_type
+        self.body = body
+
+    def __str__(self):
+        return f""
+
+    def output(self, depth=0):
+        print(f"{'    ' * depth}FUNCTION {self.name}")
+        print(f"{'    ' * (depth + 1)}ARGUMENTS")
+        for argument in self.arguments:
+            argument.output(depth + 2)
+        self.return_type.output(depth + 1)
+        self.body.output(depth + 1)
+
+class Variable(Node):
+    def __init__(self, name, datatype):
+        self.name = name
+        self.datatype = datatype
+
+    def __str__(self):
+        return f"VARIABLE {self.name}: {self.datatype}"
+
+    def output(self, depth=0):
+        print(f"{'    ' * depth}VARIABLE {self.name}: {self.datatype}")

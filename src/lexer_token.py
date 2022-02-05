@@ -50,12 +50,13 @@ class Integer(Token):
 
 class Semicolon(Token): pattern = re.compile(";")
 class Colon(Token):     pattern = re.compile(":")
+class Comma(Token):     pattern = re.compile(",")
 class Equals(Token):    pattern = re.compile("=")
 class Plus(Token):      pattern = re.compile("\+")
 class Minus(Token):     pattern = re.compile("-")
 class Mul(Token):       pattern = re.compile("\*")
 class Div(Token):       pattern = re.compile("/")
-class Arrow(Token):     pattern = re.compile("->")
+#class Arrow(Token):     pattern = re.compile("->")
 
 class LParen(Token):    pattern = re.compile("\(")
 class RParen(Token):    pattern = re.compile("\)")
