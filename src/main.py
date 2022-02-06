@@ -4,8 +4,8 @@ from parser import Parser
 def test():
     code = """
     fun calculate(x: int): int {
-        var x_squared: int = x * x;
-        return 2 * x_squared;
+        var y: int = x + 1;
+        return y;
     }
     """
 
