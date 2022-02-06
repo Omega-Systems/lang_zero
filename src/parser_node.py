@@ -82,11 +82,10 @@ class Function(Node):
         return f""
 
     def output(self, depth=0):
-        print(f"{'    ' * depth}FUNCTION {self.name}")
+        print(f"{'    ' * depth}FUNCTION {self.name}: {self.return_type}")
         print(f"{'    ' * (depth + 1)}ARGUMENTS")
         for argument in self.arguments:
             argument.output(depth + 2)
-        self.return_type.output(depth + 1)
         self.body.output(depth + 1)
 
 class Variable(Node):
@@ -99,3 +98,11 @@ class Variable(Node):
 
     def output(self, depth=0):
         print(f"{'    ' * depth}VARIABLE {self.name}: {self.datatype}")
+
+class Return(Node):
+    def __init__(self, value):
+        self.value = value
+
+    def output(self, depth=0):
+        print(f"{'    ' * depth}RETURN")
+        self.value.output(depth + 1)

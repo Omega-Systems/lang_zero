@@ -44,9 +44,9 @@ class Integer(Token):
     pattern = re.compile("[+-]?[0-9]+")
     def __init__(self, value): self.value: int = int(value)
 
-# class Character(Token):
-#     pattern = re.compile("#a#")
-#     def __init__(self, value): self.value: int = value[1:2]
+class Character(Token):
+    pattern = re.compile("'.*'")
+    def __init__(self, value): self.value: int = value[0]
 
 class Semicolon(Token): pattern = re.compile(";")
 class Colon(Token):     pattern = re.compile(":")

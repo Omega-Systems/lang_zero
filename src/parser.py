@@ -56,6 +56,11 @@ class Parser:
                         self.match(token.Semicolon)
                         variable = node.Variable(name, datatype)
                         return node.VarDeclaration(variable, value)
+                    case "return":
+                        self.match(token.Name)
+                        value = self.parse_sum()
+                        self.match(token.Semicolon)
+                        return node.Return(value)
 
     def parse_name(self):
         return node.Identifier(self.match(token.Name))
@@ -96,7 +101,6 @@ class Parser:
         raise Exception(f"Invalid syntax near {repr(self.current_token)}")
 
     def match(self, *token_types):
-
         if type(self.current_token) in token_types:
             last_token = self.current_token
             self.current_token = next(self.tokens)

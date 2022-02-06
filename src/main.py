@@ -3,11 +3,9 @@ from parser import Parser
 
 def test():
     code = """
-    fun main(arg0: int): int {
-        // This is a comment
-        var a: int = 2;
-        var b: int = 3;
-        var c: int = a + b;
+    fun calculate(x: int): int {
+        var x_squared: int = x * x;
+        return 2 * x_squared;
     }
     """
 
