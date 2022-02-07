@@ -4,7 +4,7 @@ from parser import Parser
 def test():
     code = """
     fun calculate(x: int): int {
-        var y: int = 2 * x;
+        var y: int = 3 * x;
         return y;
     }
     """
